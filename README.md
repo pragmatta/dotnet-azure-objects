@@ -25,51 +25,52 @@ In your ConfigurationManager AppSettings add the Azure storage account connectio
 ### Create A Class
 First thing you need to do is to derive a class from one of the base classes: 
 ```
-    public class Person : TableObject
-    {
-        protected NameValueCollection _defaultValues = new NameValueCollection();
-        public override NameValueCollection DefaultValues { get { return _defaultValues; } }
+public class Person : TableObject
+{
+	protected NameValueCollection _defaultValues = new NameValueCollection();
+	public override NameValueCollection DefaultValues { get { return _defaultValues; } }
 
-        public Person(string id) : base(id) { }
+	public Person(string id) : base(id) { }
 
-        public string name { get; set; }
-        public string car { get; set; }
-    }
+	public string name { get; set; }
+	public string car { get; set; }
+}
 ```
 
 ### Create An Instance
 To create a table just create an instance of the class and save it! 
 ```
-    Person person = new Person("Foo");
-	person.name = "Bar";
-	person.name = "Toyota";
-	person.save();
+Person person = new Person("Foo");
+person.name = "Bar";
+person.name = "Toyota";
+person.save();
 ```
 
 ### Manipulate Data
 To fetch data from the table based on a property value, create an element and set the values you want to search and empty the properties you need.
 ```
-    Person person = new Person();
-	person.name = "";
-	person.car = "Honda";
-	List<Person> honda_owners = person.queryByValues();
+Person person = new Person();
+person.name = "";
+person.car = "Honda";
+List<Person> honda_owners = person.queryByValues();
 ```
 
 To iterate through all data and update some values fetch data from the table based on a property value, create an element and set the values you want to search and empty the properties you need.
 ```
-	Func<Person, bool> person_iterator = person =>
+Func<Person, bool> person_iterator = person =>
+{
+	if (person.car == "Honda Jazz")
 	{
-		if (person.car == "Honda Jazz")
-		{
-			person.car == "Honda Fit"
-			return true;
-		}
-		return false;
-	};
-    Person person = new Person();
-	person.car = "";
-	person.iterateByValues(person_iterator);
+		person.car == "Honda Fit"
+		return true;
+	}
+	return false;
+};
+
+Person person = new Person();
+person.car = "";
+person.iterateByValues(person_iterator);
 ```
 
 ## Documentation
-See [**https://github.com/RationalMatta/dotnet-azure-objects/documentation/html/annotated.html**] for more
+See [**http://htmlpreview.github.io/?http://github.com/RationalMatta/dotnet-azure-objects/blob/master/documentation/html/annotated.html**](https://github.com/RationalMatta/dotnet-azure-objects/documentation/html/annotated.html) for more
