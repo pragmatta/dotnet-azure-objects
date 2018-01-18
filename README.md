@@ -3,15 +3,15 @@
 ## Introduction
 Rational Azure Objects is a wrapper for Azure Table and Queue object. Purpose is to provide a simple base class that allows you to quickly derive child classes by just introducing the data properties. No need to manage tables or queues, just start creating object instances and storing them to Azure. Also Rational Azure Objects provides a simple way manipulate data sets like
 * Tables
-..* Insert a collection of elements
-..* Query elements based on property values
-..* Iterate and update table elements
-..* Copy properties from various collections
-..* Export data in various formats
+  * Insert a collection of elements
+  * Query elements based on property values
+  * Iterate and update table elements
+  * Copy properties from various collections
+  * Export data in various formats
 * Queues
-..* Simple methods to peek, pop, push and remove elements from queue
-..* Copy properties from various collections
-..* Export data in various formats
+  * Simple methods to peek, pop, push and remove elements from queue
+  * Copy properties from various collections
+  * Export data in various formats
 
 ## Getting Started
 
