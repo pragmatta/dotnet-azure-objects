@@ -373,7 +373,7 @@ namespace RationalZone.v4.AzureObjects
         /// <param name="value_delimeter">The value delimeter e.g. '='.</param>
         /// <param name="property_delimeter">The property delimeter e.g. '<br />'.</param>
         /// <returns></returns>
-        public string exportAsHtml(IAzureObject obj, string name_tag = "", string value_tag = "", string value_delimeter = "=", string property_delimeter = "<br />")
+        public string exportAsHtml(string name_tag = "", string value_tag = "", string value_delimeter = "=", string property_delimeter = "<br />")
         {
             return AzureHelpers._exportAsHtml(this, name_tag, value_tag, value_delimeter, property_delimeter);
         }
