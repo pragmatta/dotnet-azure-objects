@@ -16,10 +16,10 @@ Rational Azure Objects is a wrapper for Azure Table and Queue object. Purpose is
 ## Getting Started
 
 ### Configure Storage Account
-In your ConfigurationManager AppSettings add the Azure storage account connection string as key "dotnet-azure-objects-connectionstring". For example in your website web.config appSettings-section add line
+In your ConfigurationManager AppSettings add the Azure storage account connection string as key "dotnet-azure-objects.connectionstring". For example in your website web.config appSettings-section add line
 
 ```
-<add key="dotnet-azure-objects-connectionstring" value="DefaultEndpointsProtocol=https;AccountName=myaccountname;AccountKey=...;EndpointSuffix=core.windows.net" />
+<add key="dotnet-azure-objects.connectionstring" value="DefaultEndpointsProtocol=https;AccountName=myaccountname;AccountKey=...;EndpointSuffix=core.windows.net" />
 ```
 
 ### Create A Class

@@ -209,7 +209,7 @@ namespace RationalZone.v4.AzureObjects
     {
 		private static DateTime _default_datetime = new DateTime(1900, 1, 1);
 
-        protected static CloudStorageAccount _account = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["dotnet-azure-objects-connectionstring"]);
+        protected static CloudStorageAccount _account = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["dotnet-azure-objects.connectionstring"]);
         protected static CloudTableClient _client = _account.CreateCloudTableClient();
         protected static Dictionary<string, CloudTable> _tables = new Dictionary<string, CloudTable>();
 
@@ -751,7 +751,7 @@ namespace RationalZone.v4.AzureObjects
     {
         private static DateTime _defalt_datetime = new DateTime(1900, 1, 1);
 
-        protected static CloudStorageAccount _account = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["StorageConnectionString"]);
+        protected static CloudStorageAccount _account = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["dotnet-azure-objects.connectionstring"]);
         protected static CloudQueueClient _client = _account.CreateCloudQueueClient();
         protected static Dictionary<string, CloudQueue> _queues = new Dictionary<string, CloudQueue>();
 
