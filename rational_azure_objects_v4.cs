@@ -17,25 +17,22 @@ using Microsoft.WindowsAzure.Storage.Queue;
 
 using RationalZone.v4;
 
-/// <summary>
 /// RationalZone.v4.AzureObjects module for an easy to use Azure Table and Queue objects. Aim is to make
 /// it easy to create custom data types and add type dependent logic(e.g.load/save handling) and helper
 /// functions(e.g.add a Dictionary of elements to a table)
-/// </summary>
+///
 namespace RationalZone.v4.AzureObjects
 {
-    /// <summary>
     /// Common interface for Azure objects, both table and queue
-    /// </summary>
+    ///
     public interface IAzureObject
     {
-        /// <summary>
         /// Array of properties defined by an IAzureObject instance
-        /// </summary>
+        ///
         PropertyInfo[] DeclaredProperties { get; }
-        /// <summary>
+		
         /// Optional default values that should be used for undefined properties.
-        /// </summary>
+        ///
         NameValueCollection DefaultValues { get; }
     }
 
@@ -200,9 +197,8 @@ namespace RationalZone.v4.AzureObjects
         }
     }
 
-    /// <summary>
     /// Base class for Azure table objects
-    /// </summary>
+    ///
     /// <seealso cref="Microsoft.WindowsAzure.Storage.Table.TableEntity" />
     /// <seealso cref="RationalZone.v4.AzureObjects.IAzureObject" />
     public abstract class TableObject : TableEntity, IAzureObject
@@ -231,54 +227,49 @@ namespace RationalZone.v4.AzureObjects
             set { RowKey = value; }
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TableObject"/> class.
-        /// </summary>
+        /// Default constructor without params
+        ///
         public TableObject() {
             _properties = AzureHelpers._getDeclaredProperties(this.GetType());
             _table = _getTable(this.GetType().Name);
             error = "";
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TableObject"/> class with a custom PartitionKey.
-        /// </summary>
-        /// <param name="_partition">The partition.</param>
-        /// <param name="_id">The identifier.</param>
+        /// Constructor with partition and id defined
+        ///
+        /// @param string _partition The partition.
+        /// @param string _id The identifier.
         public TableObject(string _partition, string _id) : this()
         {
             PartitionKey = _partition;
             RowKey = _id;
 			load_time = _default_datetime; // azure can't store DateTime.minValue
         }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TableObject"/> class with a Partition key as a prefix of the id.
-        /// </summary>
-        /// <param name="_id">The identifier.</param>
-        /// <param name="partition_prefix">The partition prefix.</param>
+        /// Constructor with prefix of the id as partition 
+        ///
+        /// @param string _id The identifier.
+        /// @param string partition_prefix The partition prefix.
         public TableObject(string _id, int partition_prefix = 2) : this()
         {
             PartitionKey = _id.Substring(0, Math.Min(partition_prefix, _id.Length));
             RowKey = _id;
             load_time = _default_datetime; // azure can't store DateTime.minValue
         }
-        /// <summary>
+		
         /// Determines whether this instance is loaded.
-        /// </summary>
-        /// <returns>
-        ///   <c>true</c> if this instance is loaded; otherwise, <c>false</c>.
-        /// </returns>
+        ///
+        /// @returns Whether object has been loaded 
+		///
         public bool isLoaded()
 		{
 			return isLoadedSince(_default_datetime);
 		}
-        /// <summary>
+		
         /// Determines whether [is loaded since] [the specified time].
-        /// </summary>
-        /// <param name="time">The time.</param>
-        /// <returns>
-        ///   <c>true</c> if [is loaded since] [the specified time]; otherwise, <c>false</c>.
-        /// </returns>
+        ///
+        /// @param string time The time.
+        /// @returns Whether object is loaded since the specified time
+		///
         public bool isLoadedSince(DateTime time) 
 		{
 			return load_time > time;
@@ -295,92 +286,101 @@ namespace RationalZone.v4.AzureObjects
             return table;
         }
 
-        /// <summary>
         /// Gets the property by key name.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
+        ///
+        /// @param string key The key.
+        /// @returns Property value if defined, null otherwise
+		///
         public string getProperty(string key)
         {
             return AzureHelpers._getProperty(this, key);
         }
-        /// <summary>
+		
         /// Gets the property by PropertyInfo.
-        /// </summary>
-        /// <param name="property">The property.</param>
-        /// <returns></returns>
+        ///
+        /// @param PropertyInfo property The property.
+        /// @returns Property value if defined, null otherwise
+		///
         public string getProperty(PropertyInfo property)
         {
             return AzureHelpers._getProperty(this, property);
         }
-        /// <summary>
+		
         /// Sets the property by key name.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="value">The value.</param>
+        ///
+        /// @param string key The key.
+        /// @param string value The value.
+        ///
         public void setProperty(string key, string value)
         {
             AzureHelpers._setProperty(this, key, value);
         }
-        /// <summary>
+		
         /// Sets the property by PropertyInfo.
-        /// </summary>
-        /// <param name="property">The property.</param>
-        /// <param name="value">The value.</param>
+        ///
+        /// @param PropertyInfo property The property.
+        /// @param string value The value.
+        ///
         public void setProperty(PropertyInfo property, string value)
         {
             AzureHelpers._setProperty(this, property, value);
         }
-        /// <summary>
+		
         /// Adds properties from a NameValueCollection.
-        /// </summary>
-        /// <param name="collection">The collection.</param>
+        ///
+        /// @param NameValueCollection collection The collection.
+        ///
         public void addCollection(NameValueCollection collection)
         {
             AzureHelpers._addCollection(this, collection);
         }
-        /// <summary>
-        /// Exports properties as json.
-        /// </summary>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
+		
+        /// Exports properties of given keys as JSON.
+        ///
+        /// @param string[] keys The keys.
+        /// @returns Values of given keys as JSON-string
+		///
         public string exportAsJson(string[] keys)
         {
             return AzureHelpers._exportAsJson(this, keys);
         }
-        /// <summary>
+		
         /// Exports properties as json.
-        /// </summary>
-        /// <returns></returns>
+		///
+        /// @returns Values as JSON-string
+		///
         public string exportAsJson()
         {
             return AzureHelpers._exportAsJson(this);
         }
-        /// <summary>
+		
         /// Exports properties as dictionary.
-        /// </summary>
-        /// <returns></returns>
+		///
+        /// @returns Values as Dictionary<string, string>
+		///
         public Dictionary<string, string> exportAsDictionary()
         {
             return AzureHelpers._exportAsDictionary(this);
         }
-        /// <summary>
+		
         /// Exports properties as HTML.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <param name="name_tag">The name tag e.g. '<td>'.</param>
-        /// <param name="value_tag">The value tag e.g. '<td>'.</param>
-        /// <param name="value_delimeter">The value delimeter e.g. '='.</param>
-        /// <param name="property_delimeter">The property delimeter e.g. '<br />'.</param>
-        /// <returns></returns>
+        ///
+        /// @param string obj The object.
+        /// @param string name_tag The name tag e.g. '<td>'.
+        /// @param string value_tag The value tag e.g. '<td>'.
+        /// @param string value_delimeter The value delimeter e.g. '='.
+        /// @param string property_delimeter The property delimeter e.g. '<br />'.
+        /// @returns Values as HTML-string
+		///
         public string exportAsHtml(string name_tag = "", string value_tag = "", string value_delimeter = "=", string property_delimeter = "<br />")
         {
             return AzureHelpers._exportAsHtml(this, name_tag, value_tag, value_delimeter, property_delimeter);
         }
-        /// <summary>
+		
         /// Copies properties from a DynamicTableEntity.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
+        ///
+        /// @param DynamicTableEntity entity The entity.
+        ///
         public void copyFromTable(DynamicTableEntity entity)
         {
             if (entity != null)
@@ -392,34 +392,38 @@ namespace RationalZone.v4.AzureObjects
                 this.Timestamp = entity.Timestamp;
             }
         }
-        /// <summary>
+		
         /// Copies properties from a HTTP request.
-        /// </summary>
-        /// <param name="request">The request.</param>
+        ///
+        /// @param HttpRequest request The request.
+        ///
         public void copyFromHttp(HttpRequest request)
         {
             AzureHelpers._copyFromHttp(this, request);
         }
-        /// <summary>
+		
         /// Copies properties from json-data.
-        /// </summary>
-        /// <param name="json_data">The json data.</param>
+        ///
+        /// @param string json_data The json data.
+        ///
         public void copyFromJson(string json_data)
         {
             AzureHelpers._copyFromJson(this, json_data);
         }
-        /// <summary>
+		
         /// Copies properties from ini-data.
-        /// </summary>
-        /// <param name="ini_data">The ini data.</param>
+        ///
+        /// @param string ini_data The ini data.
+        ///
         public void copyFromIni(string ini_data)
         {
             AzureHelpers._copyFromIni(this, ini_data);
         }
-        /// <summary>
+		
         /// Copies properties from a string-dictionary.
-        /// </summary>
-        /// <param name="data">The data.</param>
+        ///
+        /// @param Dictionary<string, string> data The data.
+        ///
         public void copyFromDictionary(Dictionary<string, string> data)
         {
             AzureHelpers._copyFromDictionary(this, data);
@@ -465,13 +469,13 @@ namespace RationalZone.v4.AzureObjects
             return String.Compare(a.PartitionKey, b.PartitionKey);
         }
 
-        /// <summary>
         /// Queries the table using a custom query filter and selection.
-        /// </summary>
+        ///
         /// <typeparam name="T"></typeparam>
-        /// <param name="query_filter">The query filter created e.g. TableQuery.GenerateFilterCondition.</param>
-        /// <param name="query_selection">The query selection to return as a list of property names or null for all.</param>
-        /// <returns>List of elements</returns>
+        /// @param string query_filter The query filter created e.g. TableQuery.GenerateFilterCondition.
+        /// @param List<String> query_selection The query selection to return as a list of property names or null for all.
+        /// @returns List<T> of elements
+		///
         public static List<T> query<T>(string query_filter = "", List<String> query_selection = null) where T : TableObject, new()
         {
             TableQuery query = new TableQuery();
@@ -495,13 +499,13 @@ namespace RationalZone.v4.AzureObjects
             return result;
         }
 
-        /// <summary>
         /// Queries the table by using the object property values as filters. Non-empty values are matched using the given comparison and table operators, empty values are returned and null values are ignored.
-        /// </summary>
+        ///
         /// <typeparam name="T"></typeparam>
-        /// <param name="query_comparison">The query comparison to use with properties e.g. QueryComparisons.Equal.</param>
-        /// <param name="table_operator">The table operator e.g. TableOperators.And.</param>
-        /// <returns>List of elements</returns>
+        /// @param string query_comparison The query comparison to use with properties e.g. QueryComparisons.Equal.
+        /// @param string table_operator The table operator e.g. TableOperators.And.
+        /// @returns List of elements
+		///
         public List<T> queryByValues<T>(string query_comparison = QueryComparisons.Equal, string table_operator = TableOperators.And) where T : TableObject, new()
         {
             string query_filter = _getQueryFilter();
@@ -509,14 +513,14 @@ namespace RationalZone.v4.AzureObjects
             return query<T>(query_filter, query_selection);
         }
 
-        /// <summary>
         /// Iterates the table values using a custom query filter and selection and calls an update callback for each element.
-        /// </summary>
+        ///
         /// <typeparam name="T"></typeparam>
-        /// <param name="update_method">The update method that returns true if the element was changed and should be updated.</param>
-        /// <param name="query_filter">The query filter created e.g. TableQuery.GenerateFilterCondition.</param>
-        /// <param name="query_selection">The query selection to return as a list of property names or null for all.</param>
-        /// <returns>Number of updated elements</returns>
+        /// @param Func<T, bool> update_method The update method that returns true if the element was changed and should be updated.
+        /// @param string query_filter The query filter created e.g. TableQuery.GenerateFilterCondition.
+        /// @param List<String> query_selection The query selection to return as a list of property names or null for all.
+        /// @returns Number of updated elements
+		///
         public static int iterate<T>(Func<T, bool> update_method, string query_filter = "", List<String> query_selection = null) where T : TableObject, new()
         {
             if (update_method == null)
@@ -557,14 +561,14 @@ namespace RationalZone.v4.AzureObjects
             return update_count;
         }
 
-        /// <summary>
         /// Iterates the table by using the object property values as filters and calls an update callback for each element. Non-empty values are matched using the given comparison and table operators, empty values are returned and null values are ignored.
-        /// </summary>
+        ///
         /// <typeparam name="T"></typeparam>
-        /// <param name="update_method">The update method that returns true if the element was changed and should be updated.</param>
-        /// <param name="query_comparison">The query comparison.</param>
-        /// <param name="table_operator">The table operator.</param>
-        /// <returns>Number of updated elements</returns>
+        /// @param Func<T, bool> update_method The update method that returns true if the element was changed and should be updated.
+        /// @param string query_comparison The query comparison.
+        /// @param string table_operator The table operator.
+        /// @returns Number of updated elements
+		///
         public int iterateByValues<T>(Func<T, bool> update_method, string query_comparison = QueryComparisons.Equal, string table_operator = TableOperators.And) where T : TableObject, new()
         {
             string query_filter = _getQueryFilter();
@@ -572,13 +576,13 @@ namespace RationalZone.v4.AzureObjects
             return iterate<T>(update_method, query_filter, query_selection);
         }
 
-        /// <summary>
         /// Iterates the given elements calls an update callback for each element.
-        /// </summary>
+        ///
         /// <typeparam name="T"></typeparam>
-        /// <param name="elements">The elements.</param>
-        /// <param name="update_method">The update method that returns true if the element was changed and should be updated.</param>
-        /// <returns>Number of updated elements</returns>
+        /// @param List<T> elements The elements.
+        /// @param Func<T, bool> update_method The update method that returns true if the element was changed and should be updated.
+        /// @returns Number of updated elements
+		///
         public static int iterateByElements<T>(List<T> elements, Func<T, bool> update_method) where T : TableObject, new()
         {
             int updates = 0;
@@ -625,16 +629,15 @@ namespace RationalZone.v4.AzureObjects
             return updates;
         }
 
-        /// <summary>
         /// What should happen on insert operation when encountering duplicates
-        /// </summary>
+        ///
         public enum AzureInsertMode { fail, replace, merge }
-        /// <summary>
         /// Inserts the specified elements.
-        /// </summary>
+        ///
         /// <typeparam name="T"></typeparam>
-        /// <param name="elements">The elements.</param>
-        /// <param name="duplicate_mode">If there are duplicates, fail, replace or merge element.</param>
+        /// @param List<T> elements The elements.
+        /// @param AzureInsertMode duplicate_mode If there are duplicates, fail, replace or merge element.
+		///
         public static void insert<T>(List<T> elements, AzureInsertMode duplicate_mode = AzureInsertMode.fail) where T : TableObject, new()
         {
             TableBatchOperation batch_update = new TableBatchOperation();
@@ -661,11 +664,11 @@ namespace RationalZone.v4.AzureObjects
             }
         }
 
-        /// <summary>
         /// Reloads the element if older than specified period.
-        /// </summary>
-        /// <param name="period">The period in seconds.</param>
-        /// <returns>True if loaded</returns>
+        ///
+        /// @param double period The period in seconds.
+        /// @returns Whether loaded
+		///
         public virtual bool refresh(double period)
 		{
 			if (!isLoadedSince(DateTime.Now.AddSeconds(-period)))
@@ -673,10 +676,10 @@ namespace RationalZone.v4.AzureObjects
 			else
 				return false;
 		}
-        /// <summary>
         /// Loads the element from the table.
-        /// </summary>
-        /// <returns>True if loaded</returns>
+        ///
+        /// @returns Whether loaded
+		///
         public virtual bool load()
         {
             error = "";
@@ -697,10 +700,10 @@ namespace RationalZone.v4.AzureObjects
             }
         }
 
-        /// <summary>
         /// Saves the element to the table.
-        /// </summary>
-        /// <returns>True if saved</returns>
+        ///
+        /// @returns Whether saved
+		///
         public virtual bool save()
         {
             error = "";
@@ -718,10 +721,10 @@ namespace RationalZone.v4.AzureObjects
             }
         }
 
-        /// <summary>
         /// Delete the element from the table.
-        /// </summary>
-        /// <returns>True if deleted</returns>
+        ///
+        /// @returns Whether deleted
+		///
         public virtual bool delete()
         {
             if (this.ETag == null)
@@ -743,9 +746,8 @@ namespace RationalZone.v4.AzureObjects
         }
     }
 
-    /// <summary>
     /// Base class for Azure queue objects.
-    /// </summary>
+    ///
     /// <seealso cref="RationalZone.v4.AzureObjects.IAzureObject" />
     public abstract class QueueObject: IAzureObject
     {
@@ -770,9 +772,8 @@ namespace RationalZone.v4.AzureObjects
         public DateTime load_time { get; set; }
         public string id { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="QueueObject"/> class.
-        /// </summary>
+        /// Default constructor
+        ///
         public QueueObject()
         {
             _properties = AzureHelpers._getDeclaredProperties(this.GetType());
@@ -792,133 +793,145 @@ namespace RationalZone.v4.AzureObjects
             return queue;
         }
 
-        /// <summary>
         /// Gets the property by key name.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
+        ///
+        /// @param string key The key.
+		/// @returns Property value if defined, null otherwise
+		///
         public string getProperty(string key)
         {
             return AzureHelpers._getProperty(this, key);
         }
-        /// <summary>
+		
         /// Gets the property by PropertyInfo.
-        /// </summary>
-        /// <param name="property">The property.</param>
-        /// <returns></returns>
+        ///
+        /// @param PropertyInfo property The property.
+		/// @returns Property value if defined, null otherwise
+		///
         public string getProperty(PropertyInfo property)
         {
             return AzureHelpers._getProperty(this, property);
         }
-        /// <summary>
+		
         /// Sets the property by key name.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="value">The value.</param>
+        ///
+        /// @param string key The key.
+        /// @param string value The value.
+		///
         public void setProperty(string key, string value)
         {
             AzureHelpers._setProperty(this, key, value);
         }
-        /// <summary>
         /// Sets the property by PropertyInfo.
-        /// </summary>
-        /// <param name="property">The property.</param>
-        /// <param name="value">The value.</param>
+        ///
+        /// @param PropertyInfo property The property.
+        /// @param string value The value.
+		///
         public void setProperty(PropertyInfo property, string value)
         {
             AzureHelpers._setProperty(this, property, value);
         }
-        /// <summary>
+		
         /// Adds properties from a NameValueCollection.
-        /// </summary>
-        /// <param name="collection">The collection.</param>
+        ///
+        /// @param NameValueCollection collection The collection.
+		///
         public void addCollection(NameValueCollection collection)
         {
             AzureHelpers._addCollection(this, collection);
         }
-        /// <summary>
-        /// Exports properties as json.
-        /// </summary>
-        /// <param name="keys">The keys.</param>
-        /// <returns>Selected properties as JSON-string</returns>
+		
+        /// Exports properties of given keys as JSON.
+        ///
+        /// @param string[] keys The keys.
+        /// @returns Selected properties as JSON-string
+		///
         public string exportAsJson(string[] keys)
         {
             return AzureHelpers._exportAsJson(this, keys);
         }
-        /// <summary>
+		
         /// Exports properties as json.
-        /// </summary>
-        /// <returns>Properties as JSON-string</returns>
+        ///
+        /// @returns Properties as JSON-string
+		///
         public string exportAsJson()
         {
             return AzureHelpers._exportAsJson(this);
         }
-        /// <summary>
+		
         /// Exports properties as dictionary.
-        /// </summary>
-        /// <returns>Dictionary of property values</returns>
+        ///
+        /// @returns Dictionary of property values
+		///
         public Dictionary<string, string> exportAsDictionary()
         {
             return AzureHelpers._exportAsDictionary(this);
         }
-        /// <summary>
+		
         /// Exports properties as HTML.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <param name="name_tag">The name tag e.g. '<td>'.</param>
-        /// <param name="value_tag">The value tag e.g. '<td>'.</param>
-        /// <param name="value_delimeter">The value delimeter e.g. '='.</param>
-        /// <param name="property_delimeter">The property delimeter e.g. '<br />'.</param>
-        /// <returns>HTML-string</returns>
+        ///
+        /// @param IAzureObject obj The object.
+        /// @param string name_tag The name tag e.g. '&lt;td&gt;'.
+        /// @param string value_tag The value tag e.g. '&lt;td&gt;'.
+        /// @param string value_delimeter The value delimeter e.g. '='.
+        /// @param string property_delimeter The property delimeter e.g. '&lt;br /&gt;'.
+        /// @returns HTML-string
+		///
         public string exportAsHtml(IAzureObject obj, string name_tag = "", string value_tag = "", string value_delimeter = "=", string property_delimeter = "<br />")
         {
             return AzureHelpers._exportAsHtml(this, name_tag, value_tag, value_delimeter, property_delimeter);
         }
-        /// <summary>
+		
         /// Copies properties from a DynamicTableEntity.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
+        ///
+        /// @param DynamicTableEntity entity The entity.
+		///
         public void copyFromTable(DynamicTableEntity entity)
         {
             AzureHelpers._copyFromTable(this, entity);
         }
-        /// <summary>
+		
         /// Copies properties from a HTTP request parameters.
-        /// </summary>
-        /// <param name="request">The request.</param>
+        ///
+        /// @param HttpRequest request The request.
+		///
         public void copyFromHttp(HttpRequest request)
         {
             AzureHelpers._copyFromHttp(this, request);
         }
-        /// <summary>
+		
         /// Copies properties from json-data.
-        /// </summary>
-        /// <param name="json_data">The json-data.</param>
+        ///
+        /// @param string json_data The json-data.
+		///
         public void copyFromJson(string json_data)
         {
             AzureHelpers._copyFromJson(this, json_data);
         }
-        /// <summary>
+		
         /// Copies properties from ini-data.
-        /// </summary>
-        /// <param name="ini_data">The ini-data.</param>
+        ///
+        /// @param string ini_data The ini-data.
+		///
         public void copyFromIni(string ini_data)
         {
             AzureHelpers._copyFromIni(this, ini_data);
         }
-        /// <summary>
+		
         /// Copies properties from a string-dictionary.
-        /// </summary>
-        /// <param name="data">The dictionary-data.</param>
+        ///
+        /// @param Dictionary<string, string> data The dictionary-data.
+		///
         public void copyFromDictionary(Dictionary<string, string> data)
         {
             AzureHelpers._copyFromDictionary(this, data);
         }
 
-        /// <summary>
-        /// Peeks an element from the queue.
-        /// </summary>
-        /// <returns></returns>
+        /// Peeks an element from the queue, i.e. gets the values without hiding it from the queue for others.
+        ///
+		/// @returns Whether successful
+        ///
         public virtual bool peek()
         {
             try
@@ -943,10 +956,10 @@ namespace RationalZone.v4.AzureObjects
             }
         }
 
-        /// <summary>
-        /// Pops an element from the queue.
-        /// </summary>
-        /// <returns></returns>
+        /// Pops an element from the queue, i.e. gets the value and hides it from the queue for others.
+        ///
+		/// @returns Whether successful
+        ///
         public virtual bool pop()
         {
             try
@@ -971,24 +984,27 @@ namespace RationalZone.v4.AzureObjects
             }
         }
 
-        /// <summary>
         /// Pushes the specified dictionary values to the queue.
-        /// </summary>
+        ///
         /// <typeparam name="T"></typeparam>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
+        /// @param Dictionary<string, string> values The values.
+        /// @param int expiration_time The expiration time as seconds.
+        /// @param int visibility_delay The visibility delay as seconds.
+		/// @returns Whether successful
+		///
         public static bool push<T>(Dictionary<string, string> values, int expiration_time = 30*24*60*60, int visibility_delay = 0) where T : QueueObject, new()
         {
             T obj = new T();
             obj.copyFromDictionary(values);
             return obj.push(expiration_time, visibility_delay);
         }
-        /// <summary>
-        /// Pushes the element to the queue.
-        /// </summary>
-        /// <param name="expiration_time">The expiration time.</param>
-        /// <param name="visibility_delay">The visibility delay.</param>
-        /// <returns></returns>
+		
+        /// Pushes the element to the queue either updating a retrieved message or creating a new one.
+        ///
+        /// @param int expiration_time The expiration time as seconds.
+        /// @param int visibility_delay The visibility delay as seconds.
+		/// @returns Whether successful
+		///
         public virtual bool push(int expiration_time = 30*24*60*60, int visibility_delay = 0)
         {
             try
@@ -1010,14 +1026,13 @@ namespace RationalZone.v4.AzureObjects
             catch (Exception e)
             {
                 error = "QueueObject.push: Exception '" + e.Message + "'";
-                return false;
             }
+            return false;
         }
 
-        /// <summary>
-        /// Removes the popped element from the queue.
-        /// </summary>
-        public virtual void remove()
+        /// Permanently removes the retrieved element from the queue.
+        ///
+        public virtual bool remove()
         {
             try
             {
@@ -1025,12 +1040,14 @@ namespace RationalZone.v4.AzureObjects
                 {
                     _queue.DeleteMessage(_message);
                     _message = null;
+					return true;
                 }
             }
             catch (Exception e)
             {
                 error = "QueueObject.remove: Exception '" + e.Message + "'";
             }
+			return false;
         }
 
     }
