@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['save',['save',['../class_rational_zone_1_1v4_1_1_azure_objects_1_1_table_object.html#af6eeacb3bdfefc839a6fa4e5b5a30969',1,'RationalZone::v4::AzureObjects::TableObject']]],
-  ['setproperty',['setProperty',['../class_rational_zone_1_1v4_1_1_azure_objects_1_1_table_object.html#aef0228cf3ed6a50760c122a66b8f6a1f',1,'RationalZone.v4.AzureObjects.TableObject.setProperty(string key, string value)'],['../class_rational_zone_1_1v4_1_1_azure_objects_1_1_table_object.html#af42bfb6531ca98af5c23f6330eb529ff',1,'RationalZone.v4.AzureObjects.TableObject.setProperty(PropertyInfo property, string value)'],['../class_rational_zone_1_1v4_1_1_azure_objects_1_1_queue_object.html#a715891f0e827705fbe354b398fa347e1',1,'RationalZone.v4.AzureObjects.QueueObject.setProperty(string key, string value)'],['../class_rational_zone_1_1v4_1_1_azure_objects_1_1_queue_object.html#ac86c4cad64b878a5544312d1b266096e',1,'RationalZone.v4.AzureObjects.QueueObject.setProperty(PropertyInfo property, string value)']]]
+  ['query_3c_20t_20_3e',['query&lt; T &gt;',['../class_rational_zone_1_1v4_1_1_azure_objects_1_1_table_object.html#ac61c05d1216b1f912f0bb724e3c820ca',1,'RationalZone::v4::AzureObjects::TableObject']]],
+  ['querybyvalues_3c_20t_20_3e',['queryByValues&lt; T &gt;',['../class_rational_zone_1_1v4_1_1_azure_objects_1_1_table_object.html#a6a26c2ed94abed66c1d8274512f97579',1,'RationalZone::v4::AzureObjects::TableObject']]],
+  ['queueobject',['QueueObject',['../class_rational_zone_1_1v4_1_1_azure_objects_1_1_queue_object.html#abf5ea8b640872706df9ce501fabbe4f0',1,'RationalZone::v4::AzureObjects::QueueObject']]]
 ];
