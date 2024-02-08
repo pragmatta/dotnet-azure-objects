@@ -73,4 +73,4 @@ person.iterateByValues(person_iterator);
 ```
 
 ## Documentation
-See [**http://github.com/RationalMatta/dotnet-azure-objects/blob/master/documentation/html/annotated.html**](http://htmlpreview.github.io/?https://github.com/RationalMatta/dotnet-azure-objects/blob/master/documentation/html/annotated.html) for more
+See [**https://github.com/pragmatta/dotnet-azure-objects/blob/master/documentation/html/annotated.html**](http://htmlpreview.github.io/?https://github.com/pragmatta/dotnet-azure-objects/blob/master/documentation/html/annotated.html) for more
